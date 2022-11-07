@@ -13,6 +13,7 @@ export default class GleeClient {
 
   async connect(){
     const asyncapiSpec = await this.asyncapi.getParserAsyncAPISpec()
+    console.log(asyncapiSpec)
   }
 
   addAdapter(adapter: any, {serverName, parserAsyncAPI}: {serverName: string, parserAsyncAPI: AsyncAPIDocument}) {
