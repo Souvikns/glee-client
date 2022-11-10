@@ -1,24 +1,28 @@
-import { SpecLoader, FunctionLoader, GleeConfigLoader } from "./models";
-import {AsyncAPIDocument} from '@asyncapi/parser'
+import { EventEmitter } from "events";
+import { AsyncAPIDocument } from "@asyncapi/parser";
+import { IGleeMessageObject } from "./types";
+import Adapter from "./adater";
 
-export default class GleeClient {
-  private _adapters = []
-  constructor(
-    private asyncapi: SpecLoader,
-    private functions: FunctionLoader,
-    private config: GleeConfigLoader
-  ) {
-
+export default class GleeClient extends EventEmitter {
+  private _parsedAsyncAPI: AsyncAPIDocument;
+  private _adapters: Array<Adapter> = []
+  constructor(parsedAsyncAPI: AsyncAPIDocument) {
+    super();
+    this._parsedAsyncAPI = parsedAsyncAPI;
   }
 
-  async connect(){
-    const asyncapiSpec = await this.asyncapi.getParserAsyncAPISpec()
-    console.log(asyncapiSpec)
+  get parsedAsyncAPI(): AsyncAPIDocument {
+    return this._parsedAsyncAPI;
   }
 
-  addAdapter(adapter: any, {serverName, parserAsyncAPI}: {serverName: string, parserAsyncAPI: AsyncAPIDocument}) {
-    this._adapters.push()
+  addAdapter(adapter: Adapter) {
+    this._adapters.push(adapter)
   }
 
-
+  emit(
+    eventName: string | symbol | IGleeMessageObject,
+    ...args: any[]
+  ): boolean {
+    return true;
+  }
 }

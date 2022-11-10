@@ -1,16 +1,28 @@
-const { Glee } = require("glee-client");
-const fs = require("fs");
+const { EventEmitter } = require("events");
 
+class Events extends EventEmitter {
+  _messageFunction;
+  constructor() {
+    super();
+  }
 
-async function main() {
-  const specString = fs.readFileSync("./asyncapi.yaml", 'utf-8');
+  onMessage(fnc) {
+    this._messageFunction = fnc;
+  }
 
-  const glee = new Glee(
-    specString,
-    {}
-  );
-
-  glee.connect()
+  send(message) {
+    this._messageFunction(message);
+  }
 }
 
-main().catch(e => console.log(e))
+async function main() {
+  const event = new Events();
+
+  event.onMessage((message) => {
+    console.log(message);
+  });
+
+  event.send({ channel: "/message", message: "Hello World" });
+}
+
+main();

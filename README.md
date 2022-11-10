@@ -1,2 +1,4 @@
 # glee-client
-A glee for websites
+A glee client for website.
+
+>💡 This library is currently just a draft. 

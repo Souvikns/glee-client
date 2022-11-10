@@ -1,21 +1,15 @@
-import GleeClient from "./glee";
-import { FunctionLoader, GleeConfigLoader, SpecLoader } from "./models";
+import App from "./app";
+import { parseAsyncAPISpec } from "./utils";
 
-export class Glee {
-  private gleeClient: GleeClient
-  constructor(asyncapiSpec: string, functions: any, config: any) {
-    this.gleeClient = new GleeClient(
-      new SpecLoader(asyncapiSpec),
-      new FunctionLoader(functions),
-      new GleeConfigLoader(config)
-    );
+export async function Glee(spec: string, config: any): Promise<App> {
+  const { parsedSpec, error } = await parseAsyncAPISpec(spec);
+
+  if (error) {
+    throw error;
   }
 
-  async connect() {
-    await this.gleeClient.connect()
-  }
+  const app = new App(parsedSpec)
+  await app.registerAdapters()
 
-  async send() {}
-
-  async onMessage() {}
+  return app
 }
