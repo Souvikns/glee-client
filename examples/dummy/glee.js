@@ -1,5 +1,5 @@
 import { createGleeClient } from "glee-client";
-import asyncapi from "./spec";
+import asyncapi from "./asyncapi.yaml";
 
 const gleeClient = createGleeClient(asyncapi);
 
