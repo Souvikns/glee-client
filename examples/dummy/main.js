@@ -1,28 +1,31 @@
-const { EventEmitter } = require("events");
+import { NewsHandler, userSignedupHandler } from "./glee";
 
-class Events extends EventEmitter {
-  _messageFunction;
-  constructor() {
-    super();
-  }
+export default function Index() {
+  const [notifications, setNotifications] = useState("");
 
-  onMessage(fnc) {
-    this._messageFunction = fnc;
-  }
-
-  send(message) {
-    this._messageFunction(message);
-  }
-}
-
-async function main() {
-  const event = new Events();
-
-  event.onMessage((message) => {
-    console.log(message);
+  NewsHandler((message) => {
+    setNotifications(message.payload);
   });
 
-  event.send({ channel: "/message", message: "Hello World" });
-}
+  return (
+    <div>
+      {notifications.map((notification) => (
+        <div key={notification.id}>{notification.body}</div>
+      ))}
 
-main();
+      <Button
+        onClick={() => {
+          userSignedupHandler(() => {
+            return [
+              {
+                reply: { payload: userData },
+              },
+            ];
+          });
+        }}
+      >
+        Signup
+      </Button>
+    </div>
+  );
+}

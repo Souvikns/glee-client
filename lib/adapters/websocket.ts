@@ -1,14 +1,8 @@
-import Adapter from "../adater";
-import Ws from 'ws';
+import Adapter from "../adapter"
 
-export default class WebsocketAdapter extends Adapter{
 
-    connect(): void {
-        this._connect()
+export default class WebsocketAdapter extends Adapter {
+    name(): string {
+        return 'websocket'
     }
-    private _connect() {
-        const server = this.parsedAsyncAPI.server(this.serverName)
-        
-    }
-
 }

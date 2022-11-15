@@ -1,40 +1,23 @@
 import { AsyncAPIDocument } from "@asyncapi/parser";
-import WebsocketAdapter from "./adapters/websocket";
-import GleeClient from "./glee";
-import { IGleeMessageObject, IGleeOnMessageFunction } from "./types";
+import Glee from "./glee";
 
-export default class App {
-  private gleeClient: GleeClient;
-  private onMessageFunction: IGleeOnMessageFunction;
-  private resolvedAsyncAPI: AsyncAPIDocument;
-  constructor(resolvedAsncAPI: AsyncAPIDocument) {
-    this.resolvedAsyncAPI = resolvedAsncAPI;
-    this.gleeClient = new GleeClient(resolvedAsncAPI);
-    this.gleeClient.on("message", (message) => this.onMessageFunction(message));
+
+export default class GleeClient {
+  private _asyncapi: AsyncAPIDocument
+  private _glee: Glee
+  constructor(asyncapi: AsyncAPIDocument, glee:  Glee) {
+    this._asyncapi = asyncapi
+    this._glee = glee
   }
 
-  async registerAdapters() {
-    let servers;
-    if (this.resolvedAsyncAPI.hasServers()) {
-      servers = this.resolvedAsyncAPI.serverNames;
+  async connect() {
+
+  }
+
+  private registerAdapters() {
+    const servers = this._asyncapi.serverNames()
+    for (const server of servers) {
+      this._asyncapi.server(server).protocol().includes('')
     }
-    servers.forEach((server) => {
-      const protocol = this.resolvedAsyncAPI.server(server).protocol();
-      if (["ws", "wss"].includes(protocol)) {
-        this.gleeClient.addAdapter(
-          new WebsocketAdapter(server, this.resolvedAsyncAPI)
-        );
-      }
-    });
   }
-
-  send(message: IGleeMessageObject) {
-    this.gleeClient.emit(message);
-  }
-
-  onMessage(fnc: IGleeOnMessageFunction) {
-    this.onMessageFunction = fnc;
-  }
-
-  onError() {}
 }

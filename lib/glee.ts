@@ -1,28 +1,16 @@
-import { EventEmitter } from "events";
-import { AsyncAPIDocument } from "@asyncapi/parser";
-import { IGleeMessageObject } from "./types";
-import Adapter from "./adater";
+import Adapter from "./adapter";
 
-export default class GleeClient extends EventEmitter {
-  private _parsedAsyncAPI: AsyncAPIDocument;
-  private _adapters: Array<Adapter> = []
-  constructor(parsedAsyncAPI: AsyncAPIDocument) {
-    super();
-    this._parsedAsyncAPI = parsedAsyncAPI;
-  }
 
-  get parsedAsyncAPI(): AsyncAPIDocument {
-    return this._parsedAsyncAPI;
-  }
+export default class Glee {
+  private _adapters: Array<{
+    protocol: string,
+    adapter: Adapter
+  }> = []
 
   addAdapter(adapter: Adapter) {
-    this._adapters.push(adapter)
-  }
-
-  emit(
-    eventName: string | symbol | IGleeMessageObject,
-    ...args: any[]
-  ): boolean {
-    return true;
+    this._adapters.push({
+      protocol: adapter.name(),
+      adapter
+    })
   }
 }

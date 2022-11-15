@@ -1,15 +1,20 @@
-import App from "./app";
+import GleeClient from "./app";
 import { parseAsyncAPISpec } from "./utils";
+import Glee from "./glee";
 
-export async function Glee(spec: string, config: any): Promise<App> {
+export default async function app(
+  spec: string,
+  config: any
+): Promise<GleeClient> {
   const { parsedSpec, error } = await parseAsyncAPISpec(spec);
 
   if (error) {
     throw error;
   }
 
-  const app = new App(parsedSpec)
-  await app.registerAdapters()
+  const glee = new Glee();
+  const gleeClient = new GleeClient(parsedSpec, glee);
+  await gleeClient.connect();
 
-  return app
+  return gleeClient;
 }
