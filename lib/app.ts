@@ -1,23 +1,17 @@
-import { AsyncAPIDocument } from "@asyncapi/parser";
-import Glee from "./glee";
+import GleeBrowser from "./core/glee";
+import { parseAsyncAPISpec } from "./utils";
 
-
-export default class GleeClient {
-  private _asyncapi: AsyncAPIDocument
-  private _glee: Glee
-  constructor(asyncapi: AsyncAPIDocument, glee:  Glee) {
-    this._asyncapi = asyncapi
-    this._glee = glee
+export default class App {
+  private _glee: GleeBrowser;
+  constructor(glee: GleeBrowser) {
+    this._glee = glee;
   }
 
-  async connect() {
+  static async create(asyncapiSpec: string, config: any) {
+    const parsedAsyncAPI = parseAsyncAPISpec(asyncapiSpec);
+    const glee = new GleeBrowser();
+    const app = new App(glee);
 
-  }
-
-  private registerAdapters() {
-    const servers = this._asyncapi.serverNames()
-    for (const server of servers) {
-      this._asyncapi.server(server).protocol().includes('')
-    }
+    return app;
   }
 }

@@ -3,7 +3,7 @@ import asyncapi from "./asyncapi.yaml";
 
 const gleeClient = createGleeClient(asyncapi);
 
-export const NewsHandler = gleeClient.handler("/news");
-export const userSignedupHandler = gleeClient.handler("/userSignup");
+export const NewsHandler = gleeClient.handler('newsOperation');
+export const userSignedupHandler = gleeClient.handler("userSignedupOperation");
 
 export default gleeClient;
