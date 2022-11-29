@@ -13,6 +13,10 @@ export default class GleeBrowser extends EventEmitter {
   private _adapterRecords: Array<IAdapterRecord> = [];
   constructor() {
     super();
+    this.on('send', (message) => {
+      const channel = message.channel;
+      const adapter = 
+    })
   }
 
   addAdapter(

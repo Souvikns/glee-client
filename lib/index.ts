@@ -1,5 +1,3 @@
 import App from "./app";
 
-App.create('', {}).then(app => {
-  
-})
+export default App

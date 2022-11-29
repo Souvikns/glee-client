@@ -21,6 +21,9 @@ export default class GleeAdapter extends EventEmitter {
     this._parsedAsyncAPI = parsedAsyncAPI;
     this._channelNames = this._parsedAsyncAPI.channelNames();
     const uriTemplateValues = new Map();
+    this.on('message', (message) => {
+      this.glee.emit('message', message)
+    })
   }
 
   get serverName(): string {
@@ -56,5 +59,5 @@ export default class GleeAdapter extends EventEmitter {
   }
 
   async connect() {}
-  async send() {}
+  async send(message) {}
 }

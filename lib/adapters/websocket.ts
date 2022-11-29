@@ -1,13 +1,12 @@
-import Adapter from '../core/adapter'
-import ws from 'ws'
-
+import GleeAdapter from "../core/adapter";
+import ws from 'ws';
 
 interface Client {
   channel: string
   client: ws
   binddings?: any
 }
-export default class WebsocketAdapter extends Adapter {
+export default class WebsocketAdapter extends GleeAdapter {
   private _clients: Array<Client> = []
   name(): string {
     return 'WebSocket Adapter'
@@ -15,6 +14,10 @@ export default class WebsocketAdapter extends Adapter {
 
   async connect(): Promise<void> {
     await this._connect()
+  }
+
+  async send(message): Promise<void> {
+    this._send(message) 
   }
 
   private async _connect() {
@@ -36,8 +39,19 @@ export default class WebsocketAdapter extends Adapter {
     for (const {client, channel} of this._clients) {
       client.on("open", () => {
       })
+
+      client.on('error', (err) => {
+        console.log(err)
+      })
     }
   }
+
+  private _send(message){
+    const client = this._clients.find(client => client.channel === message.channel)
+    client.client.send(message.payload)
+  }
+
+
 
   private getWsChannels() {
     const channels = []
