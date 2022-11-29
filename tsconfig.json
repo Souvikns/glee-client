@@ -4,13 +4,13 @@
     "esModuleInterop": true,
     "target": "ES2017",
     "declaration": true,
-    "allowJs": false,
+    "allowJs": true,
     "skipLibCheck": true,
     "allowSyntheticDefaultImports": true,
-    "module": "ES2022",
+    "module": "CommonJS",
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true
   },
-  "include": ["./lib/**/*"]
+  "include": ["lib"]
 }
