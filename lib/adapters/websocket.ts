@@ -1,70 +1,66 @@
 import GleeAdapter from "../core/adapter";
-import ws from 'ws';
+import ws from "ws";
 
 interface Client {
-  channel: string
-  client: ws
-  binddings?: any
+  channel: string;
+  client: ws;
+  binddings?: any;
 }
 export default class WebsocketAdapter extends GleeAdapter {
-  private _clients: Array<Client> = []
+  private _clients: Array<Client> = [];
   name(): string {
-    return 'WebSocket Adapter'
+    return "WebSocket Adapter";
   }
 
   async connect(): Promise<GleeAdapter> {
-    return this._connect()
+    return this._connect();
   }
 
   async send(message): Promise<void> {
-    this._send(message) 
+    return this._send(message);
   }
 
   private async _connect(): Promise<GleeAdapter> {
-    const channelsOnThisServer = this.getWsChannels()
+    const channelsOnThisServer = this.getWsChannels();
 
     for (const channel of channelsOnThisServer) {
-      const wsBindings = this.parsedAsyncAPI.channel(channel).binding('ws')
-      const url = new URL(
-        this.AsyncAPIServer.url() + channel
-      )
+      const wsBindings = this.parsedAsyncAPI.channel(channel).binding("ws");
+      const url = new URL(this.AsyncAPIServer.url() + channel);
       this._clients.push({
         channel: channel,
         client: new ws(url),
-        binddings: this.parsedAsyncAPI.channel(channel).binding('ws')
-      })
-
+        binddings: this.parsedAsyncAPI.channel(channel).binding("ws"),
+      });
     }
 
-    for (const {client, channel} of this._clients) {
+    for (const { client, channel } of this._clients) {
       client.on("open", () => {
-        client.send('opened')
-      })
+        console.log('Connected to server')
+      });
 
-      client.on('message', (message) => {
-        this.emit('message', message)
-      })
+      client.on("message", (message) => {
+        console.log(message);
+        this.emit("message", message);
+      });
 
-      client.on('error', (err) => {
-        console.log(err)
-      })
+      client.on("error", (err) => {
+        console.log(err);
+      });
     }
-    return this
+    return this;
   }
 
-  private _send(message){
-    console.log('CONTROL HERE');
-    const client = this._clients.find(client => client.channel === message.channel)
-    console.log(client)
-    client.client.send(message.payload)
+  private _send(message) {
+    const client = this._clients.find(
+      (client) => client.channel === message.channel
+    );
+    client.client.send(message.payload);
   }
-
-
 
   private getWsChannels() {
-    const channels = []
+    const channels = [];
     for (const channel of this.channelNames) {
-      if (this.parsedAsyncAPI.channel(channel).hasBinding('ws')) {
+      if (this.parsedAsyncAPI.channel(channel).hasBinding("ws")) {
         if (this.parsedAsyncAPI.channel(channel).hasServers()) {
           if (
             this.parsedAsyncAPI
@@ -72,14 +68,14 @@ export default class WebsocketAdapter extends GleeAdapter {
               .servers()
               .includes(this.serverName)
           ) {
-            channels.push(channel)
+            channels.push(channel);
           }
         } else {
-          channels.push(channel)
+          channels.push(channel);
         }
       }
     }
 
-    return channels
+    return channels;
   }
 }

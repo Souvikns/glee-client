@@ -3,46 +3,50 @@ import { parseAsyncAPISpec } from "./utils";
 import WebsocketAdapter from "./adapters/websocket";
 import GleeAdapter from "./core/adapter";
 
+export async function createAsyncapiClient(asyncapiSpec: string, config: any) {
+  const { parsedSpec, error } = await parseAsyncAPISpec(asyncapiSpec);
+  if (error) throw error;
+  const serverNames = parsedSpec.serverNames();
+  const glee = new GleeBrowser();
+  for (const serverName of serverNames) {
+    const server = parsedSpec.server(serverName);
+    const protocol = server.protocol();
+    if (["ws", "wss"].includes(protocol)) {
+      glee.addAdapter(WebsocketAdapter, {
+        serverName: serverName,
+        server,
+        parsedAsyncAPI: parsedSpec,
+      });
+    }
+  }
+  const app = new App(glee);
+  return app;
+}
+
 export default class App {
   private _glee: GleeBrowser;
   private _onMessageFunc: Function;
-  private _AdapterInstance: Array<GleeAdapter>
-  constructor(glee: GleeBrowser, adapterInstance: Array<GleeAdapter>) {
+  private _AdapterInstance: Array<GleeAdapter>;
+  constructor(glee: GleeBrowser) {
     this._glee = glee;
-    this._AdapterInstance = adapterInstance;
     this._glee.on("message", (message) => {
       this._onMessageFunc(message);
     });
   }
 
-  static async create(asyncapiSpec: string, config: any) {
-    const { parsedSpec } = await parseAsyncAPISpec(asyncapiSpec);
-    const glee = new GleeBrowser();
-    const serverNames = parsedSpec.serverNames();
-    for (const serverName of serverNames) {
-      const server = parsedSpec.server(serverName);
-      const protocol = server.protocol();
-      if (["ws", "wss"].includes(protocol)) {
-        glee.addAdapter(WebsocketAdapter, {
-          serverName: serverName,
-          server,
-          parsedAsyncAPI: parsedSpec,
-        });
-      }
-    }
-    const conns = await glee.listen()
-    const app = new App(glee, conns);
-    return app;
+  async connect(){
+    this._AdapterInstance = await this._glee.listen()
   }
 
   onMessage(fn: Function) {
     this._onMessageFunc = fn;
   }
 
-  send(message) {
-    const channel = message.channel;
-    if (this._AdapterInstance[0].channelNames.includes(channel)) {
-      this._AdapterInstance[0].send(message)
-    }
+  async send(message) {
+    console.log(this._AdapterInstance)
+    // const channel = message.channel;
+    // if (this._AdapterInstance[0].channelNames.includes(channel)) {
+    //   this._AdapterInstance[0].send(message);
+    // }
   }
 }

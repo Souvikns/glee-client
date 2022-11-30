@@ -12,7 +12,7 @@ channels:
     bindings:
       ws:
         bindingVersion: 0.1.0
-    publish:
+    subscribe:
       operationId: hello
       message:
         $ref: '#/components/messages/HelloMessage'

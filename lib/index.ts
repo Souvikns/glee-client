@@ -1,3 +1,5 @@
-import App from "./app";
+import GleeBrowser, { createAsyncapiClient } from "./app";
 
-export default App
+export default GleeBrowser;
+
+export { createAsyncapiClient };
