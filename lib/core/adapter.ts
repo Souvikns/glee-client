@@ -58,6 +58,6 @@ export default class GleeAdapter extends EventEmitter {
     });
   }
 
-  async connect() {}
+  async connect(): Promise<any> {}
   async send(message) {}
 }

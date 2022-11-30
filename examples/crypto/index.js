@@ -10,6 +10,9 @@ async function main(){
     client.onMessage((message) => {
         console.log(message)
     })
+
+    client.send({channel: 'hello', payload: 'Hi, Just telling hello'})
+
 }
 
 main()

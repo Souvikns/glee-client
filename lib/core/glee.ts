@@ -27,8 +27,8 @@ export default class GleeBrowser extends EventEmitter {
   }
 
   private async connect() {
-    const promises = [];
-    this._adapterRecords.forEach((a) => {
+    const promises = []
+    this._adapterRecords.forEach(async (a) => {
       const adapter = new a.Adapter(
         this,
         a.serverName,
@@ -36,13 +36,14 @@ export default class GleeBrowser extends EventEmitter {
         a.parsedAsyncAPI
       );
 
-      promises.push(adapter.connect());
+      promises.push(adapter.connect())
     });
 
-    return Promise.all(promises);
+    return Promise.all(promises)
+
   }
 
   async listen() {
-    return this.connect();
+    return await this.connect()
   }
 }

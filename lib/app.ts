@@ -1,13 +1,15 @@
 import GleeBrowser from "./core/glee";
 import { parseAsyncAPISpec } from "./utils";
 import WebsocketAdapter from "./adapters/websocket";
+import GleeAdapter from "./core/adapter";
 
 export default class App {
   private _glee: GleeBrowser;
   private _onMessageFunc: Function;
-  constructor(glee: GleeBrowser) {
+  private _AdapterInstance: Array<GleeAdapter>
+  constructor(glee: GleeBrowser, adapterInstance: Array<GleeAdapter>) {
     this._glee = glee;
-    this._glee.listen();
+    this._AdapterInstance = adapterInstance;
     this._glee.on("message", (message) => {
       this._onMessageFunc(message);
     });
@@ -28,8 +30,8 @@ export default class App {
         });
       }
     }
-    glee.listen()
-    const app = new App(glee);
+    const conns = await glee.listen()
+    const app = new App(glee, conns);
     return app;
   }
 
@@ -38,6 +40,9 @@ export default class App {
   }
 
   send(message) {
-    this._glee.emit("send", message);
+    const channel = message.channel;
+    if (this._AdapterInstance[0].channelNames.includes(channel)) {
+      this._AdapterInstance[0].send(message)
+    }
   }
 }

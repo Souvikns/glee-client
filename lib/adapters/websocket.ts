@@ -12,15 +12,15 @@ export default class WebsocketAdapter extends GleeAdapter {
     return 'WebSocket Adapter'
   }
 
-  async connect(): Promise<void> {
-    await this._connect()
+  async connect(): Promise<GleeAdapter> {
+    return this._connect()
   }
 
   async send(message): Promise<void> {
     this._send(message) 
   }
 
-  private async _connect() {
+  private async _connect(): Promise<GleeAdapter> {
     const channelsOnThisServer = this.getWsChannels()
 
     for (const channel of channelsOnThisServer) {
@@ -38,16 +38,24 @@ export default class WebsocketAdapter extends GleeAdapter {
 
     for (const {client, channel} of this._clients) {
       client.on("open", () => {
+        client.send('opened')
+      })
+
+      client.on('message', (message) => {
+        this.emit('message', message)
       })
 
       client.on('error', (err) => {
         console.log(err)
       })
     }
+    return this
   }
 
   private _send(message){
+    console.log('CONTROL HERE');
     const client = this._clients.find(client => client.channel === message.channel)
+    console.log(client)
     client.client.send(message.payload)
   }
 
