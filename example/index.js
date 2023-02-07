@@ -8,7 +8,7 @@ const wss = new WebSocketServer({
 
 wss.on('connection', (conn) => {
     conn.on('message', (data) => {
-        console.log(data)
+        console.log(data.toString())
     })
 
     conn.send('Connection Established')

@@ -28,11 +28,12 @@ class WebSocketAdapter extends EventEmitter {
         adapter: this,
         connection: this.client,
       })
-
-      this.client.on('message', (message) => {
-        this.emit('message', message)
-      })
     })
+    this.client.on('message', (message) => {
+      this.emit('message', message)
+    })
+
+    return this
   }
 
   send(data) {
@@ -59,7 +60,7 @@ class AsyncAPI {
   async connect() {
     // I parse the spec file to create needed adapters
     const wss = new WebSocketAdapter(this.glee, this.url)
-    await wss.connect()
+    return await wss.connect()
   }
 
   onMessage(fn) {
@@ -73,11 +74,10 @@ class AsyncAPI {
 
 async function main() {
   const client = new AsyncAPI('ws://localhost:3000')
-  await client.connect().then(() => {
-    client.onMessage((m) => {
-      console.log('%s',m.payload)
-      client.send('Hello')
-    })
+  await client.connect()
+  client.onMessage(m => {
+    console.log('%s', m.payload)
+    client.send('Hello')
   })
 }
 
