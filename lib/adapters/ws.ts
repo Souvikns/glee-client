@@ -1,5 +1,6 @@
 import ws from 'ws'
 import GleeAdapter from "../adapter";
+import GleeMessage from '../message';
 
 interface Client {
     channel: string,
@@ -14,8 +15,8 @@ export default class WsAdapter extends GleeAdapter {
         return this._connect()
     }
 
-    async send() {
-
+    async send(message) {
+        return this._send(message)
     }
 
 
@@ -25,6 +26,7 @@ export default class WsAdapter extends GleeAdapter {
         const channels = this.getChannels()
 
         for (const channel of channels) {
+            console.log(channel, channels)
             const url = new URL(this.server.url() + channel)
             this.clients.push({
                 channel,
@@ -44,6 +46,7 @@ export default class WsAdapter extends GleeAdapter {
             })
 
             client.on("message", (data) => {
+                console.log(this.parsedAsyncAPI.channel(channel).servers())
                 const msg = this._createMessage(channel, data)
                 this.emit("message", msg, client)
               })
@@ -59,8 +62,17 @@ export default class WsAdapter extends GleeAdapter {
     }
 
     private _createMessage(channel: string, message: any) {
-
+        return new GleeMessage({
+            serverName: this.serverName,
+            channel: channel,
+            message: message.toString(),
+            server: this.server,
+            conn: this.clients.find(c => c.channel === channel)
+        })
     }
 
-    private _send() {}
+    private _send({channel, message}) {
+        const conn = this.clients.find(cl => cl.channel === channel)
+        conn.client.send(message)
+    }
 }

@@ -32,4 +32,8 @@ export default class Glee extends EventEmitter {
         })
         return Promise.all(promises)
     }
+
+    get adapter() {
+        return this._adapters
+    }
 }

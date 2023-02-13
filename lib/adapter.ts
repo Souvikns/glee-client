@@ -57,7 +57,7 @@ export default class GleeAdapter extends EventEmitter {
     throw new Error('Method `connect` is not implemented.')
   }
 
-  async send(): Promise<any> {
+  async send(message: any): Promise<any> {
     throw new Error('Method `send` is not implemented.')
   }
 }

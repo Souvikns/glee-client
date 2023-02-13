@@ -7,9 +7,14 @@ const wss = new WebSocketServer({
 
 
 wss.on('connection', (conn) => {
+    // setInterval(() => {
+    //     conn.send('Hello')
+    // }, 2000)
+
+    conn.send('Hello')
+
     conn.on('message', (data) => {
         console.log(data.toString())
     })
 
-    conn.send('Connection Established')
 })
