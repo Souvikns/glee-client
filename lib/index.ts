@@ -1,5 +1,22 @@
-import GleeBrowser, { createAsyncapiClient } from "./app";
+import AsyncAPIClient from './app'
+import Glee from './glee'
+import { parseAsyncAPISpec } from './utils'
+import registerAdapter from './registerAdapter'
 
-export default GleeBrowser;
+export default async function asyncAPIClient(
+  asyncapiSpec: string,
+  config?: any
+) {
+  const { parsedSpec, error } = await parseAsyncAPISpec(asyncapiSpec)
+  if (error) {
+    throw error
+  }
+  const glee = new Glee()
+  await registerAdapter(glee, parsedSpec)
+  await glee.connect()
 
-export { createAsyncapiClient };
+  const client = new AsyncAPIClient(glee)
+
+
+  return client
+}
