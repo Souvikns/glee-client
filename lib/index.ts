@@ -1,6 +1,6 @@
 import AsyncAPIClient from './app'
 import Glee from './glee'
-import { parseAsyncAPISpec } from './utils'
+import { createChannelRegistry, parseAsyncAPISpec } from './utils'
 import registerAdapter from './registerAdapter'
 
 export default async function asyncAPIClient(
