@@ -26,7 +26,6 @@ export default class AsyncAPIClient {
   }
 
   send(channel: string, message) {
-    const adapters = this._glee.adapter
-    adapters[0].instance.send({ channel, message })
+    console.log('Not yet implemented')
   }
 }
