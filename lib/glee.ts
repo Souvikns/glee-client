@@ -3,6 +3,7 @@ import GleeAdapter from './adapter';
 import {AsyncAPIDocument, Server} from '@asyncapi/parser'
 
 
+
 type AdapterRecord = {
     Adapter: typeof GleeAdapter,
     instance?: GleeAdapter,
@@ -12,13 +13,7 @@ type AdapterRecord = {
   }
 
 export default class Glee extends EventEmitter {
-    private _adapters: Array<AdapterRecord>
-
-    constructor() {
-        super()
-        this._adapters = []
-    }
-    
+    private _adapters: Array<AdapterRecord> = []
 
     addAdapter(Adapter: typeof GleeAdapter, {serverName, server, parsedAsyncAPI}: {serverName: string, server: Server, parsedAsyncAPI: AsyncAPIDocument}) {
         this._adapters.push({Adapter, serverName, server, parsedAsyncAPI})
