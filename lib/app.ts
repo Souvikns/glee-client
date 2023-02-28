@@ -12,7 +12,7 @@ interface ISuccessfullConnection {
 }
 
 interface IMessageChain {
-  channelName: string,
+  channelName: string
   message: any
 }
 
@@ -33,17 +33,17 @@ export default class AsyncAPIClient {
       }
     })
 
-    this._glee.on('connect', ({adapter, channel}) => {
-      const existingMessage = this._messageChain.filter(m => m.channelName === channel)
-      if (existingMessage.length !==0 ) {
-        existingMessage.forEach(m => {
-          adapter.send({channel: m.channelName, message: m.message})
+    this._glee.on('connect', ({ adapter, channel }) => {
+      const existingMessage = this._messageChain.filter(
+        (m) => m.channelName === channel
+      )
+      if (existingMessage.length !== 0) {
+        existingMessage.forEach((m) => {
+          adapter.send({ channel: m.channelName, message: m.message })
         })
-      } 
-      this._channelRegistry.push({adapter, channelName: channel})
-      
+      }
+      this._channelRegistry.push({ adapter, channelName: channel })
     })
-
   }
 
   on(channel: string, fn: Function) {
@@ -51,12 +51,14 @@ export default class AsyncAPIClient {
   }
 
   send(channel: string, message) {
-    const conns = this._channelRegistry.filter(cr => cr.channelName === channel)
-    if(conns.length === 0) {
-      this._messageChain.push({channelName: channel, message})
+    const conns = this._channelRegistry.filter(
+      (cr) => cr.channelName === channel
+    )
+    if (conns.length === 0) {
+      this._messageChain.push({ channelName: channel, message })
     } else {
-      conns.forEach(cn => {
-        cn.adapter.send({channel, message})
+      conns.forEach((cn) => {
+        cn.adapter.send({ channel, message })
       })
     }
   }
